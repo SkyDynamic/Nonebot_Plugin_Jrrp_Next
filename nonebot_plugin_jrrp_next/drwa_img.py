@@ -87,9 +87,15 @@ async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time
     # Get Hitokoto Message
     hitokoto_result = await AsyncClient().get(HITOKOTO_URL, params={"c": str(random.choice(HITOKOTO_TYPE)), "encode": "json", "min_length": 40, "max_length": 100})
     hitokoto_msg: str = hitokoto_result.json().get("hitokoto")
+
     hitokoto_msg = hitokoto_msg.replace("。", ". ")
     hitokoto_msg = hitokoto_msg.replace("，", ", ")
-    hitokoto_msg_list = textwrap.wrap(hitokoto_msg, width=16)
+    hitokoto_msg = hitokoto_msg.replace("；", "; ")
+    hitokoto_msg = hitokoto_msg.replace("“", '"')
+    hitokoto_msg = hitokoto_msg.replace("”", '"')
+    hitokoto_msg = hitokoto_msg.replace("、", ", ")
+
+    hitokoto_msg_list = textwrap.wrap(hitokoto_msg, width=15, max_lines=9, break_long_words= True)
     spacing = 30
     for line in hitokoto_msg_list:
         image = draw_text(image, DataText(image_width-290, image_height-340+spacing, 20, line, StaticPath.AlibabaPuHuiTi), (155, 121, 147, 255))
