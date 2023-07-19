@@ -4,6 +4,31 @@ from PIL import Image, ImageFont, ImageDraw
 from typing import Tuple
 from io import BytesIO
 from httpx import AsyncClient
+from typing import Union
+
+try:
+    from numpy import average
+except ImportError:
+    def average(Itr):
+        return sum(Itr) / len(Itr)
+
+
+def get_average_color(image: Image.Image):
+    pix = image.load()
+    R_list = []
+    G_list = []
+    B_list = []
+    width, height = image.size
+    for x in range(int(width)):
+        for y in range(height):
+            R_list.append(pix[x, y][0])
+            G_list.append(pix[x, y][1])
+            B_list.append(pix[x, y][2])
+    R_average = int(average(R_list))
+    G_average = int(average(G_list))
+    B_average = int(average(B_list))
+    return R_average, G_average, B_average
+
 
 def rol(num: int, k: int, bits: int = 64):
     b1 = bin(num << k)[2:]
@@ -11,12 +36,14 @@ def rol(num: int, k: int, bits: int = 64):
         return int(b1, 2)
     return int(b1[-bits:], 2)
 
+
 def get_hash(string: str):
     num = 5381
     num2 = len(string) - 1
     for i in range(num2 + 1):
         num = rol(num, 5) ^ num ^ ord(string[i])
     return num ^ 12218072394304324399
+
 
 def get_jrrp(string: str):
     now = time.localtime()
@@ -39,6 +66,7 @@ def get_jrrp(string: str):
         num2 = round(num / 969 * 99)
     return num2
 
+
 async def open_img(image_path: str, is_url: bool = True) -> Image.Image:
     if is_url:
         origin_data = await AsyncClient().get(image_path)
@@ -46,6 +74,7 @@ async def open_img(image_path: str, is_url: bool = True) -> Image.Image:
         return Image.open(img_bytes).convert("RGBA")
     with open(image_path, "rb") as f:
         return Image.open(f).convert("RGBA")
+
 
 class DataText:
     def __init__(self, L, T, size, text, path, anchor="lt") -> None:
@@ -56,6 +85,7 @@ class DataText:
         self.font = ImageFont.truetype(str(self.path), size)
         self.anchor = anchor
 
+
 def write_text(
     image: Image.Image,
     font,
@@ -64,7 +94,7 @@ def write_text(
     color=(255, 255, 255, 255),
     anchor="lt",
     stroke_width=0,
-    stroke_fill="Black",
+    stroke_fill: Union[str, tuple[int, int, int]]="Black",
 ) -> Image.Image:
     rgba_image = image
     text_overlay = Image.new("RGBA", rgba_image.size, (255, 255, 255, 0))
@@ -80,12 +110,13 @@ def write_text(
     )
     return Image.alpha_composite(rgba_image, text_overlay)
 
+
 def draw_text(
     image,
     class_text: DataText,
     color: Tuple[int, int, int, int] = (255, 255, 255, 255),
     stroke_width=0,
-    stroke_fill="Black",
+    stroke_fill: Union[str, tuple[int, int, int]]="Black",
 ) -> Image.Image:
     font = class_text.font
     text = class_text.text

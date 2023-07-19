@@ -6,9 +6,10 @@ from .utils import get_jrrp
 from .drwa_img import draw_img
 
 import datetime
+import random
 
 JRRP_COMMAND = on_command('jrrp', aliases={"今日人品", "j"})
-DEFAULT_IMAGE_URL = 'https://t.mwm.moe/moez/'
+DEFAULT_IMAGE_URL_LIST = ['https://t.mwm.moe/moez/', 'https://t.mwm.moe/ycy/', 'https://t.mwm.moe/moez/', 'https://t.mwm.moe/ys/']
 
 @JRRP_COMMAND.handle()
 async def jrrpCommandHandler(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
@@ -23,5 +24,6 @@ async def jrrpCommandHandler(bot: Bot, event: GroupMessageEvent, arg: Message = 
     USER_GROUP_DATA: dict = await bot.call_api('get_group_member_info', **{"group_id": event.group_id, "user_id": event.user_id})
     nickname = USER_GROUP_DATA.get('nickname')
     localtime = datetime.datetime.now()
-    image = await draw_img(event.user_id ,_jrrp, nickname, DEFAULT_IMAGE_URL, localtime)
+    url = random.choice(DEFAULT_IMAGE_URL_LIST)
+    image = await draw_img(event.user_id ,_jrrp, nickname, url, localtime)
     await JRRP_COMMAND.finish(image)

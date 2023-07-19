@@ -6,7 +6,7 @@ from io import BytesIO
 import random
 import textwrap
 
-from .utils import DataText, open_img, draw_text
+from .utils import DataText, open_img, draw_text, get_average_color
 from .resource_manager import StaticPath
 
 HITOKOTO_URL = "https://v1.hitokoto.cn/"
@@ -30,14 +30,17 @@ async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time
     img_cover = await open_img(background_url)
     img_cover_width, img_cover_height = img_cover.size
     img_cover = img_cover.resize((1280, int(1280 / img_cover_width * img_cover_height)))
+    average_color = get_average_color(img_cover)
     image = Image.new("RGBA", img_cover.size, (0, 0, 0, 0))
     image.alpha_composite(img_cover)
+
     # Step 2
     image_width = image.width
     image_height = image.height
     im1 = Image.new("RGBA", (image_width * 2, image_height * 2))
     first_round = ImageDraw.Draw(im1, "RGBA")
     first_round.rounded_rectangle((0, 0, image_width * 2, 150 * 2), 15 * 2, (238, 211, 222, 225), width=3 * 2, outline=(255, 255, 255, 255))
+
     # Step 3
     namelength = ImageFont.truetype(str(StaticPath.AlibabaPuHuiTi), 3).getlength(name)
     nameLength = namelength + 160
@@ -58,12 +61,12 @@ async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time
     draw_time_current = DataText(image_width-10-format_time_length, 50, 25, format_time_current, StaticPath.AlibabaPuHuiTi)
     draw_time_data = DataText(image_width-45-format_time_length, 90, 25, format_time_date, StaticPath.AlibabaPuHuiTi)
     draw_time_week = DataText(image_width-45-format_time_length, 130, 25, format_time_week, StaticPath.AlibabaPuHuiTi)
-    image = draw_text(image, draw_time_current, (226, 184, 255, 255))
-    image = draw_text(image, draw_time_data, (226, 184, 255, 255))
-    image = draw_text(image, draw_time_week, (226, 184, 255, 255))
+    image = draw_text(image, draw_time_current, average_color, 2, (255, 255, 255))
+    image = draw_text(image, draw_time_data, average_color, 2, (255, 255, 255))
+    image = draw_text(image, draw_time_week, average_color, 2, (255, 255, 255))
 
     draw_time_line = DataText(image_width-40, 30, 150, "|", StaticPath.AlibabaPuHuiTi)
-    image = draw_text(image, draw_time_line, (152, 127, 176, 255))
+    image = draw_text(image, draw_time_line, average_color, 1, (255, 255, 255))
 
     # Step 5
     draw_user_info = DataText(60, image_height-160, 25, "User Info", StaticPath.AlibabaPuHuiTi)
@@ -98,7 +101,7 @@ async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time
     hitokoto_msg_list = textwrap.wrap(hitokoto_msg, width=15, max_lines=9, break_long_words= True)
     spacing = 30
     for line in hitokoto_msg_list:
-        image = draw_text(image, DataText(image_width-290, image_height-340+spacing, 20, line, StaticPath.AlibabaPuHuiTi), (155, 121, 147, 255))
+        image = draw_text(image, DataText(image_width-290, image_height-340+spacing, 19, line, StaticPath.AlibabaPuHuiTi), (155, 121, 147, 255))
         spacing += 30
 
     draw_hitokoto = DataText(image_width-290, image_height-340, 20, "今日一言", StaticPath.AlibabaPuHuiTi)
@@ -108,8 +111,8 @@ async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time
     CREATED_TEXT_LINES = ["Created by Nonebot_Plugin_Jrrp_Next", "Style by @MoYoez", "Python-Version by @SkyDynamic"]
     spacing = 0
     for line in CREATED_TEXT_LINES:
-        image = draw_text(image, DataText(10, 15 + spacing, 18, line, StaticPath.AlibabaPuHuiTi), (155, 121, 147, 255))
-        spacing += 18
+        image = draw_text(image, DataText(10, 15 + spacing, 18, line, StaticPath.AlibabaPuHuiTi), average_color, 2, (255, 255, 255))
+        spacing += 22
 
     buffer = BytesIO()
     image.convert("RGB").save(buffer, "png")
