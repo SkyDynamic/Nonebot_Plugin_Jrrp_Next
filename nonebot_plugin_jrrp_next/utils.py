@@ -1,4 +1,5 @@
 import time
+import random
 
 from PIL import Image, ImageFont, ImageDraw
 from typing import Tuple
@@ -30,41 +31,11 @@ def get_average_color(image: Image.Image):
     return R_average, G_average, B_average
 
 
-def rol(num: int, k: int, bits: int = 64):
-    b1 = bin(num << k)[2:]
-    if len(b1) <= bits:
-        return int(b1, 2)
-    return int(b1[-bits:], 2)
-
-
-def get_hash(string: str):
-    num = 5381
-    num2 = len(string) - 1
-    for i in range(num2 + 1):
-        num = rol(num, 5) ^ num ^ ord(string[i])
-    return num ^ 12218072394304324399
-
-
 def get_jrrp(string: str):
     now = time.localtime()
-    num = round(abs((get_hash("".join([
-        "asdfgbn",
-        str(now.tm_yday),
-        "12#3$45",
-        str(now.tm_year),
-        "IUY"
-    ])) / 3 + get_hash("".join([
-        "QWERTY",
-        string,
-        "0*8&6",
-        str(now.tm_mday),
-        "kjhg"
-    ])) / 3) / 527) % 1001)
-    if num >= 970:
-        num2 = 100
-    else:
-        num2 = round(num / 969 * 99)
-    return num2
+    seed = f"h&%tkH+cck>#+{string}+t/sHz2t^6nr+{now.tm_year}+Ba`;05gz4x@5+{now.tm_mday}+2NB>9|0A^gz:+{now.tm_mon}+UtH4vfhh^)q^"
+    random.seed(seed)
+    return random.randint(0, 100)
 
 
 async def open_img(image_path: str, is_url: bool = True) -> Image.Image:

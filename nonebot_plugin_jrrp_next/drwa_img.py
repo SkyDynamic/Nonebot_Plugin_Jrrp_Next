@@ -60,7 +60,7 @@ async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time
     format_time_length = ImageFont.truetype(str(StaticPath.AlibabaPuHuiTi), 25).getlength(format_time_date)
     draw_time_current = DataText(image_width-10-format_time_length, 50, 25, format_time_current, StaticPath.AlibabaPuHuiTi)
     draw_time_data = DataText(image_width-45-format_time_length, 90, 25, format_time_date, StaticPath.AlibabaPuHuiTi)
-    draw_time_week = DataText(image_width-45-format_time_length, 130, 25, format_time_week, StaticPath.AlibabaPuHuiTi)
+    draw_time_week = DataText(image_width-45, 130, 25, format_time_week, StaticPath.AlibabaPuHuiTi, "rt")
     image = draw_text(image, draw_time_current, average_color, 2, (255, 255, 255))
     image = draw_text(image, draw_time_data, average_color, 2, (255, 255, 255))
     image = draw_text(image, draw_time_week, average_color, 2, (255, 255, 255))
@@ -116,5 +116,4 @@ async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time
 
     buffer = BytesIO()
     image.convert("RGB").save(buffer, "png")
-
     return MessageSegment.image(buffer)
