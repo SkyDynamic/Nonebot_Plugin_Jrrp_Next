@@ -9,7 +9,9 @@ import datetime
 import random
 
 JRRP_COMMAND = on_command('jrrp', aliases={"今日人品", "j"})
-DEFAULT_IMAGE_URL_LIST = ['https://t.mwm.moe/moez/', 'https://t.mwm.moe/ycy/', 'https://t.mwm.moe/moez/', 'https://t.mwm.moe/ys/']
+DEFAULT_IMAGE_URL_LIST = [
+    'https://t.mwm.moe/moez/', 'https://t.mwm.moe/ycy/', 'https://t.mwm.moe/moez/', 'https://t.mwm.moe/ys/'
+    ]
 
 @JRRP_COMMAND.handle()
 async def jrrpCommandHandler(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):

@@ -88,7 +88,7 @@ async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time
     image.alpha_composite(im3.resize((image_width, image_height), Image.LANCZOS), (image_width-300, image_height-350))
 
     # Get Hitokoto Message
-    hitokoto_result = await AsyncClient().get(HITOKOTO_URL, params={"c": str(random.choice(HITOKOTO_TYPE)), "encode": "json", "min_length": 40, "max_length": 100})
+    hitokoto_result = await AsyncClient().get(HITOKOTO_URL, params={"c": str(random.choice(HITOKOTO_TYPE)), "encode": "json", "min_length": 0, "max_length": 100})
     hitokoto_msg: str = hitokoto_result.json().get("hitokoto")
 
     hitokoto_msg = hitokoto_msg.replace("。", ". ")
