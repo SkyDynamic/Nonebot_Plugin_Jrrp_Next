@@ -13,6 +13,8 @@ except ImportError:
     def average(Itr):
         return sum(Itr) / len(Itr)
 
+rand = random.Random()
+
 
 def get_average_color(image: Image.Image):
     pix = image.load()
@@ -34,8 +36,8 @@ def get_average_color(image: Image.Image):
 def get_jrrp(string: str):
     now = time.localtime()
     seed = f"h&%tkH+cck>#+{string}+t/sHz2t^6nr+{now.tm_year}+Ba`;05gz4x@5+{now.tm_mday}+2NB>9|0A^gz:+{now.tm_mon}+UtH4vfhh^)q^"
-    random.seed(seed)
-    return random.randint(0, 100)
+    rand.seed(seed)
+    return rand.randint(0, 100)
 
 
 async def open_img(image_path: str, is_url: bool = True) -> Image.Image:
