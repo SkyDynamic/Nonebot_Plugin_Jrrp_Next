@@ -12,7 +12,7 @@ from .resource_manager import StaticPath
 HITOKOTO_URL = "https://v1.hitokoto.cn/"
 HITOKOTO_TYPE = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"]
 
-def avatar_handler(image: Image.Image) -> MessageSegment:
+def avatar_handler(image: Image.Image) -> Image.Image:
     scale = 3
     w, h = image.size
     r = w * scale
@@ -24,7 +24,7 @@ def avatar_handler(image: Image.Image) -> MessageSegment:
     return image
 
 # 样式来自Github MoYoez/Lucy_ZeroBot
-async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time: datetime = datetime.now()) -> Image.Image:
+async def draw_img(user_id: int, jrrp: int, name: str, background_url: str, time: datetime = datetime.now()) -> MessageSegment:
     # Background
     # Step 1
     img_cover = await open_img(background_url)
