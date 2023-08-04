@@ -30,5 +30,8 @@ async def jrrpCommandHandler(bot: Bot, event: GroupMessageEvent, arg: Message = 
     nickname = USER_DATA.get('nickname')
     localtime = datetime.datetime.now()
     url = random.choice(DEFAULT_IMAGE_URL_LIST)
-    image = await draw_img(user_id ,_jrrp, nickname, url, localtime)
+    try:
+        image = await draw_img(user_id ,_jrrp, nickname, url, localtime)
+    except:
+        image = "Bot出了点问题, 返回文字版:\n您今天的人品值是: " + str(_jrrp)
     await JRRP_COMMAND.finish(image)
